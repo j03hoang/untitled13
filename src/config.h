@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 
+const int BAUD_RATE = 9600;
+
 /**  SENSORS */
 const int ULTRASONIC_TRIG_1 = 4;
 const int ULTRASONIC_ECHO_1 = PIN_A4;
@@ -25,8 +27,10 @@ const int MOTOR_MAX_PWM = 255;
 const int MOTOR_MIN_PWM = 100;
 
 /** ENCODERS */
-#define ENCODER_PIN_1 A2
-#define ENCODER_PIN_2 A3
+const int ENCODER_A_IN1 = 2;
+const int ENCODER_A_IN2 = 3;
+const int ENCODER_B_IN1 PIN_A6;
+const int ENCODER_B_IN2 PIN_A7;
 
 const int ROT_PER_TICK = 617;
 
