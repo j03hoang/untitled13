@@ -3,7 +3,9 @@
 
 #include <Arduino.h>
 
-/**  SENSORS */
+/*  SENSORS
+* A4 and 4 are pins
+ * */
 const int ULTRASONIC_TRIG_1 = 4;
 const int ULTRASONIC_ECHO_1 = PIN_A4;
 
