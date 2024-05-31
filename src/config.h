@@ -9,6 +9,8 @@ const int BAUD_RATE = 9600;
 const int ULTRASONIC_TRIG_1 = 4;
 const int ULTRASONIC_ECHO_1 = PIN_A4;
 
+const float SPEED_OF_SOUND = 29.1;
+
 // SENSOR CALIBRATIONS
 const int LEFT_THRESHOLD = 40;   // minimum value to register a wall
 const int RIGHT_THRESHOLD = 40;  // minimum value to register a wall
@@ -25,6 +27,13 @@ const int MOTOR_B_REVERSE = 10;
 
 const int MOTOR_MAX_PWM = 255;
 const int MOTOR_MIN_PWM = 100;
+
+const int LOOP_INTERVAL = -1;
+const int FWD_KP = -1;
+const int FWD_KD = -1;
+
+const int MM_PER_COUNT_LEFT = -1;
+const int MM_PER_COUNT_RIGHT = -1;
 
 /** ENCODERS */
 const int ENCODER_A_IN1 = 2;

@@ -1,9 +1,10 @@
 #include <Arduino.h>
 #include <RotaryEncoder.h>
 
-#include "imu.h"
 
 #include "config.h"
+
+#include "sensors.h"
 //#include <QuickPID.h>
 //
 //float Setpoint, Input, Output;
@@ -19,7 +20,7 @@
 RotaryEncoder encoder(ENCODER_A_IN1, ENCODER_A_IN2, RotaryEncoder::LatchMode::TWO03);
 
 #define BNO055_SAMPLERATE_DELAY_MS (1000)
-//Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
 
 static int lastPos = 0;
 
@@ -247,13 +248,14 @@ void init_sensor() {
 
 void setup() {
     Serial.begin(9600);
-    imu_.init();
+    sensors.init();
 }
 
-
 void loop() {
-//    encoderDo();
-    imu_.get();
-
+    if (sensors.do_i_see_a_wall_in_front()) {
+        Serial.println("true");
+    } else {
+        Serial.println("false");
+    }
     delay(1000);
 }

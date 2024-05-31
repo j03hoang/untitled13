@@ -39,6 +39,10 @@
  * The walls of the units of the maze are 5 cm high and 1.2 cm thick (assume 5% tolerancefor mazes).
  * An outside wall encloses the entire maze.
  */
+
+class Sensors;
+extern Sensors sensors;
+
 class Sensors {
     public:
 
@@ -46,31 +50,20 @@ class Sensors {
      bool see_left_wall;
      bool see_right_wall;
 
-     /** not sure if this should be a const or a float
-      * should it even be a const?
-      * speed of sound at 20c = 343 m/s = 1/29.1 cm/s
-      *
-     */
-     const float speedOfSound = 29.1;
-    // sensor should probably be a parent class or something
-     Sensors() {
-        see_front_wall = false;
-        see_left_wall = false;
-        see_right_wall = false;
-        initUltrasonicSensor();
-     }
-
-
-     void initUltrasonicSensor() {
+     void init() {
          pinMode(ULTRASONIC_TRIG_1, OUTPUT);
          pinMode(ULTRASONIC_ECHO_1, INPUT);
+
+//         pinMode(ULTRASONIC_TRIG_2, OUTPUT);
+//         pinMode(ULTRASONIC_ECHO_2, INPUT);
+//
+//         pinMode(ULTRALIGHT, OUTPUT);
      }
 
-     /**
-      * get Distance using Ultrasonic sensor
-      * are we sure we want to return an int?
-      * returns cm
-      */
+     // unsigned long getDistance(uint8_t pin1, uint8_t pin2) {}
+
+     // unsigned long getFrontDistance() {}
+
      unsigned long getDistance() {
          unsigned long duration;
          unsigned long distance;
@@ -82,19 +75,24 @@ class Sensors {
          digitalWrite(ULTRASONIC_ECHO_1, LOW);
 
          duration = pulseIn(ULTRASONIC_ECHO_1, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
-         distance = (duration/2) / speedOfSound;
-         // delay(100); // not sure this is necessary
+         distance = (duration/2) / SPEED_OF_SOUND;
 
          return distance;
     }
-    /**
-     * is it a wall?
-     */
+
+    void update() {
+        see_left_wall = getDistance(ULTRASONIC_TRIG_1, ULTRASONIC_ECHO_1) > LEFT_THRESHOLD;
+        see_right_wall = getDistance(ULTRASONIC_TRIG_2, ULTRASONIC_ECHO_2) > RIGHT_THRESHOLD;
+        see_front_wall = getFrontDistance() > FRONT_THRESHOLD;
+
+     }
+
     bool do_i_see_a_wall_in_front() {
-        if (getDistance() < 3) {
-           return true;
-        }
-        return false;
+         long i = getDistance();
+
+         Serial.print(i);
+         Serial.println("cm");
+         return i > 3.0;
     }
 
     private:

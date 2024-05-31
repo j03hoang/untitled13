@@ -11,15 +11,15 @@ volatile long leftEncoderTicks = 0;
 volatile long rightEncoderTicks = 0;
 
 void leftInputChange() {
-    encoderLeft.tick();
-    leftEncoderTicks = encoderLeft.getPosition();
+    encoderLeft->tick();
+    leftEncoderTicks = encoderLeft->getPosition();
     Serial.print("LEFT:");
     Serial.println(leftEncoderTicks);
 }
 
 void rightInputChange() {
-    encoderRight.tick();
-    rightEncoderTicks = encoderRight.getPosition();
+    encoderRight->tick();
+    rightEncoderTicks = encoderRight->getPosition();
     Serial.print("RIGHT:");
     Serial.println(rightEncoderTicks);
 }
