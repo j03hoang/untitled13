@@ -4,14 +4,23 @@
 #include "config.h"
 
 /* Using 2 Ultrasonic Sensors and a photo resistor paired with an led
+ *      - Ultrasonic Sensor has 15 degree range
+ *      - We have 2 photoresistors/LED combos
+ *          - must be calibrated to ambient light level :/ ie not very precise
+ *
  *
  * TODO:
+ *      - Figure out where sensors are going to mounted
+ *      - calibrate photo resistor and LED
  *      - sense walls
  *          # 18cm x 18 cm unit cell
  *          - trigger sound
  *          - wait for signal to come back
  *          - if distance is 9 cm (middle of cell) there's a wall ahead
  *      - this class should give steering adjustment
+ *
+ * Tests:
+ *      - ID front wall and stop
  *
  * Resources:
  * https://www.instructables.com/Arduino-Ultrasonic-Sensor-HC-sr04-LEDs-Distance-Me/
@@ -42,9 +51,17 @@ class Sensors {
       * speed of sound at 20c = 343 m/s = 1/29.1 cm/s
       *
      */
-     const int speedOfSound;
+     const float speedOfSound = 29.1;
+    // sensor should probably be a parent class or something
+     Sensors() {
+        see_front_wall = false;
+        see_left_wall = false;
+        see_right_wall = false;
+        initUltrasonicSensor();
+     }
 
-     void init() {
+
+     void initUltrasonicSensor() {
          pinMode(ULTRASONIC_TRIG_1, OUTPUT);
          pinMode(ULTRASONIC_ECHO_1, INPUT);
      }
@@ -52,8 +69,9 @@ class Sensors {
      /**
       * get Distance using Ultrasonic sensor
       * are we sure we want to return an int?
+      * returns cm
       */
-     int getDistance() {
+     unsigned long getDistance() {
          unsigned long duration;
          unsigned long distance;
 
@@ -69,7 +87,42 @@ class Sensors {
 
          return distance;
     }
+    /**
+     * is it a wall?
+     */
+    bool do_i_see_a_wall_in_front() {
+        if (getDistance() < 3) {
+           return true;
+        }
+        return false;
+    }
+
     private:
 };
 
 #endif
+
+/**
+* //shit happens here
+void setup() {
+    //init_imu();
+    Serial.begin(9600);
+    init_motor();
+}
+
+Sensors ultraSonic;
+void loop(){
+    //doGyro();
+    Serial.println("My dick is"); Serial.println(ultraSonic.getDistance());
+    Serial.println("centimeters long!");
+    //do i see a wall?
+    if (!ultraSonic.do_i_see_a_wall_in_front()){
+       stopMotor();
+       delay(100);
+    } else {
+        Serial.println("Full ahead Full");
+        goForward();
+        delay(100);
+    }
+}
+*/
