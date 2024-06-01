@@ -8,14 +8,15 @@
 #include "config.h"
 
 class IMU;
-
 extern IMU imu_;
+
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
 
 class IMU {
     public:
      void init() {
-         Adafruit_BNO055 bno; = Adafruit_BNO055(BNO_SENSOR_ID, BNO_ADDRESS, &Wire);
          bno.begin();
+         bno.setExtCrystalUse(true);
      }
 
      void get() {
