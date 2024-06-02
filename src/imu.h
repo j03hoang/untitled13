@@ -8,26 +8,40 @@
 #include "config.h"
 
 class IMU;
-extern IMU imu_;
+extern IMU gyro;
 
-Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28, &Wire);
+Adafruit_BNO055 m_imu = Adafruit_BNO055(55, 0x28, &Wire);
 
 class IMU {
     public:
      void init() {
-         bno.begin();
-         bno.setExtCrystalUse(true);
+         m_imu.begin();
+         m_imu.setExtCrystalUse(true);
+
+         m_prev_time = millis();
      }
 
-     void get() {
+     float getRotChange() {
          sensors_event_t event;
-         bno.getEvent(&event, Adafruit_BNO055::VECTOR_GYROSCOPE);
-         int x = event.gyro.x;
-         int y = event.gyro.y;
-         Serial.print(x);
-         Serial.print(y);
+         m_imu.getEvent(&event, Adafruit_BNO055::VECTOR_GYROSCOPE);
 
+         unsigned long currentTime = millis();
+         float deltaTime = (currentTime - m_prev_time) / 1000.;
+         m_prev_time = currentTime;
+
+         m_rot_change = event.gyro.z * deltaTime;
+         m_robot_angle += m_rot_change;
+
+         Serial.print("Rotational Change: ");
+         Serial.println(rotationalChange);
+
+         return rotationalChange;
      }
+
+    private:
+     float m_robot_angle;
+     float m_rot_change;
+     unsigned long m_prev_time;
 };
 
 

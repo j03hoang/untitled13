@@ -5,6 +5,7 @@
 #include "config.h"
 #include "sensors.h"
 #include "encoders.h"
+#include "imu.h"
 
 //void daMotor() {
 //    Serial.println("FORWARD");
@@ -68,21 +69,6 @@
 //    delay(1000);
 //}
 
-double getDistance() {
-    unsigned long duration, distance;
-    digitalWrite(ULTRASONIC_TRIG_1, LOW);
-    delayMicroseconds(2);
-    digitalWrite(ULTRASONIC_TRIG_1, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(ULTRASONIC_ECHO_1, LOW);
-    duration = pulseIn(ULTRASONIC_ECHO_1, HIGH);
-    distance = (duration/2) / 29.1;
-
-    delay(100);
-
-    return distance;
-}
-
 double convert(int numTicks) {
     double numRotations = (double) numTicks / ROT_PER_TICK;
     return numRotations * 135;
@@ -91,6 +77,7 @@ double convert(int numTicks) {
 void setup() {
     Serial.begin(9600);
     sensors.init();
+
 }
 
 void loop() {
