@@ -39,6 +39,8 @@ class Motors {
     float angleController() {
         float increment = m_omega * LOOP_INTERVAL;
         m_rot_error += increment - gyro.getRotChange();
+
+        return 0;
     }
 
     void updateControllers(float velocity, float omega, float steeringAdjustment) {

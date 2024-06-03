@@ -6,6 +6,13 @@
 #include "sensors.h"
 #include "encoders.h"
 #include "imu.h"
+#include "motion.h"
+
+ISR(TIMER2_COMPA_vect, ISR_NOBLOCK) {
+    encoders.update();
+    motion.update();
+
+}
 
 //void daMotor() {
 //    Serial.println("FORWARD");
@@ -77,14 +84,8 @@ double convert(int numTicks) {
 void setup() {
     Serial.begin(9600);
     sensors.init();
-
 }
 
 void loop() {
-    if (sensors.do_i_see_a_wall_in_front()) {
-        Serial.println("true");
-    } else {
-        Serial.println("false");
-    }
-    delay(1000);
+
 }

@@ -45,82 +45,54 @@ extern Sensors sensors;
 
 class Sensors {
     public:
-
      bool see_front_wall;
      bool see_left_wall;
      bool see_right_wall;
 
      void init() {
-         pinMode(ULTRASONIC_TRIG_1, OUTPUT);
-         pinMode(ULTRASONIC_ECHO_1, INPUT);
+         // front sensor
+         m_fs_pin_1 = ULTRASONIC_TRIG;
+         m_fs_pin_2 = ULTRASONIC_ECHO;
+         pinMode(m_fs_pin_1, OUTPUT);
+         pinMode(m_fs_pin_2, INPUT);
 
-//         pinMode(ULTRASONIC_TRIG_2, OUTPUT);
-//         pinMode(ULTRASONIC_ECHO_2, INPUT);
-//
-//         pinMode(ULTRALIGHT, OUTPUT);
+         // left sensor
+         m_ls_pin = IR_1;
+         pinMode(m_ls_pin, INPUT);
+
+         // right sensor
+         m_rs_pin = IR_2;
+         pinMode(m_rs_pin, INPUT); // right sensor
      }
 
-     // unsigned long getDistance(uint8_t pin1, uint8_t pin2) {}
+     boolean readInfrared(uint8_t pin) {
+         return digitalRead(pin);
+     }
 
-     // unsigned long getFrontDistance() {}
-
-     unsigned long getDistance() {
+     unsigned long readUltraSonic(uint8_t trigPin, uint8_t echoPin) {
          unsigned long duration;
          unsigned long distance;
-
-         digitalWrite(ULTRASONIC_TRIG_1, LOW);  //clears trigger pin
+         digitalWrite(trigPin, LOW);  //clears trigger pin
          delayMicroseconds(2);
-         digitalWrite(ULTRASONIC_TRIG_1, HIGH);
+         digitalWrite(trigPin, HIGH);
          delayMicroseconds(10);                 // sets trigger pin HIGH for 10 us
-         digitalWrite(ULTRASONIC_ECHO_1, LOW);
-
-         duration = pulseIn(ULTRASONIC_ECHO_1, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
+         digitalWrite(echoPin, LOW);
+         duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
          distance = (duration/2) / SPEED_OF_SOUND;
-
          return distance;
-    }
-
-    void update() {
-        see_left_wall = getDistance(ULTRASONIC_TRIG_1, ULTRASONIC_ECHO_1) > LEFT_THRESHOLD;
-        see_right_wall = getDistance(ULTRASONIC_TRIG_2, ULTRASONIC_ECHO_2) > RIGHT_THRESHOLD;
-        see_front_wall = getFrontDistance() > FRONT_THRESHOLD;
-
      }
 
-    bool do_i_see_a_wall_in_front() {
-         long i = getDistance();
-
-         Serial.print(i);
-         Serial.println("cm");
-         return i > 3.0;
-    }
+     void update() {
+        see_left_wall = readInfrared(m_ls_pin);
+        see_right_wall = readInfrared(m_rs_pin);
+        see_front_wall = readUltraSonic() > FRONT_THRESHOLD;
+     }
 
     private:
+     uint8_t m_fs_pin_1;
+     uint8_t m_fs_pin_2;
+     uint8_t m_ls_pin;
+     uint8_t m_rs_pin;
 };
 
 #endif
-
-/**
-* //shit happens here
-void setup() {
-    //init_imu();
-    Serial.begin(9600);
-    init_motor();
-}
-
-Sensors ultraSonic;
-void loop(){
-    //doGyro();
-    Serial.println("My dick is"); Serial.println(ultraSonic.getDistance());
-    Serial.println("centimeters long!");
-    //do i see a wall?
-    if (!ultraSonic.do_i_see_a_wall_in_front()){
-       stopMotor();
-       delay(100);
-    } else {
-        Serial.println("Full ahead Full");
-        goForward();
-        delay(100);
-    }
-}
-*/

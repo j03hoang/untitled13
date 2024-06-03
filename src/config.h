@@ -4,10 +4,15 @@
 #include <Arduino.h>
 
 const int BAUD_RATE = 9600;
+const int LOOP_FREQUENCY = 500;
+const int LOOP_INTERVAL = 1 / LOOP_FREQUENCY;
 
 /**  SENSORS */
-const int ULTRASONIC_TRIG_1 = 4;
-const int ULTRASONIC_ECHO_1 = PIN_A4;
+const int ULTRASONIC_TRIG = 4;
+const int ULTRASONIC_ECHO = PIN_A4;
+
+const int IR_1 = -1;
+const int IR_2 = -1;
 
 const float SPEED_OF_SOUND = 29.1;
 
@@ -28,7 +33,6 @@ const int MOTOR_B_REVERSE = 10;
 const int MOTOR_MAX_PWM = 255;
 const int MOTOR_MIN_PWM = 100;
 
-const int LOOP_INTERVAL = -1;
 const int FWD_KP = -1;
 const int FWD_KD = -1;
 
