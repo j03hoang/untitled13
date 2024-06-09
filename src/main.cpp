@@ -11,7 +11,7 @@ Motors motors;
 Encoders encoders;
 IMU gyro;
 
-RotaryEncoder encoder1(ENCODER_B_1, ENCODER_B_2, RotaryEncoder::LatchMode::TWO03);
+RotaryEncoder encoder1(ENCODER_A_1, ENCODER_A_2, RotaryEncoder::LatchMode::TWO03);
 RotaryEncoder encoder2(ENCODER_B_1, ENCODER_B_2, RotaryEncoder::LatchMode::TWO03);
 //Adafruit_BNO055 bno = Adafruit_BNO055(BNO_SENSOR_ID, BNO_ADDRESS, &Wire);
 
@@ -20,67 +20,7 @@ RotaryEncoder encoder2(ENCODER_B_1, ENCODER_B_2, RotaryEncoder::LatchMode::TWO03
 //    gyro.update();
 //}
 
-//void daMotor() {
-//    Serial.println("FORWARD");
-//    analogWrite(MOTOR_B_FWD, MAX_PWR / 2);
-//    analogWrite(MOTOR_B_REVERSE, LOW_);
-//
-//    analogWrite(MOTOR_A_FWD, MAX_PWR / 2);
-//    analogWrite(MOTOR_A_REVERSE, LOW_);
-//
-//
-//    delay(3000);
-//
-//    Serial.println("Stop");
-//    analogWrite(MOTOR_B_FWD, MAX_PWR);
-//    analogWrite(MOTOR_B_REVERSE, MAX_PWR);
-//
-//    analogWrite(MOTOR_A_FWD, MAX_PWR);
-//    analogWrite(MOTOR_A_REVERSE, MAX_PWR);
-//    delay(3000);
-//
-//
-//    Serial.println("REVERSE");
-//    analogWrite(MOTOR_B_FWD, LOW_);
-//    analogWrite(MOTOR_B_REVERSE, MAX_PWR);
-//
-//    analogWrite(MOTOR_A_FWD, LOW_);
-//    analogWrite(MOTOR_A_REVERSE, MAX_PWR);
-//    delay(3000);
-//
-//
-//    Serial.println("Stop");
-//    analogWrite(MOTOR_B_FWD, MAX_PWR);
-//    analogWrite(MOTOR_B_REVERSE, MAX_PWR);
-//
-//    analogWrite(MOTOR_A_FWD, MAX_PWR);
-//    analogWrite(MOTOR_A_REVERSE, MAX_PWR);
-//    delay(3000);
-//
-//    Serial.println("TURN AROUND");
-//    analogWrite(MOTOR_B_FWD, MAX_PWR);
-//    analogWrite(MOTOR_B_REVERSE, LOW_);
-//
-//    analogWrite(MOTOR_A_FWD, LOW_);
-//    analogWrite(MOTOR_A_REVERSE, MAX_PWR);
-//    delay(1000);
-//
-//    Serial.println("TURN RIGHT");
-//    analogWrite(MOTOR_B_FWD, MAX_PWR);
-//    analogWrite(MOTOR_B_REVERSE, LOW_);
-//
-//    analogWrite(MOTOR_A_FWD, LOW_);
-//    analogWrite(MOTOR_A_REVERSE, LOW_);
-//    delay(1000);
-//
-//    Serial.println("TURN LEFT");
-//    analogWrite(MOTOR_B_FWD, LOW_);
-//    analogWrite(MOTOR_B_REVERSE, LOW_);
-//
-//    analogWrite(MOTOR_A_FWD, MAX_PWR);
-//    analogWrite(MOTOR_A_REVERSE, LOW_);
-//    delay(1000);
-//}
+
 
 double convert(int numTicks) {
     double numRotations = (double) numTicks / ROT_PER_TICK;
@@ -240,4 +180,5 @@ void loop() {
     doEncoder();
 
     delay(1000);
+
 }
