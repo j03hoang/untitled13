@@ -21,22 +21,36 @@ class IMU {
          imuSensor.setExtCrystalUse(true);
 
          m_prev_time = millis();
+
+         reset();
      }
 
-     float getRotChange() {
+     void reset() {
+         m_robot_angle = 0;
+     }
+
+     void update() {
          sensors_event_t event;
          imuSensor.getEvent(&event, Adafruit_BNO055::VECTOR_GYROSCOPE);
 
          unsigned long currentTime = millis();
-         float deltaTime = (currentTime - m_prev_time) / 1000.;
+         float deltaTime = (float) (currentTime - m_prev_time) / 1000.f;
          m_prev_time = currentTime;
 
+         float z = event.gyro.z;
+         Serial.print("z");
+         Serial.println(z);
+
+         Serial.println(event.gyro.x);
+         Serial.println(event.gyro.y);
          m_rot_change = event.gyro.z * deltaTime;
          m_robot_angle += m_rot_change;
 
          Serial.print("Rotational Change: ");
          Serial.println(m_rot_change);
+     }
 
+     float getRotChange() const {
          return m_rot_change;
      }
 

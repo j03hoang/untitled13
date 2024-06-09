@@ -10,30 +10,44 @@ RotaryEncoder *encoderRight = nullptr;
 class Encoders;
 extern Encoders encoders;
 
+int leftCount = 0;
+int rightCount = 0;
+
 void left_encoder_isr();
+
 void right_encoder_isr();
 
 class Encoders {
     public:
      void init() {
-         encoderLeft = new RotaryEncoder(ENCODER_A_IN1, ENCODER_A_IN2, RotaryEncoder::LatchMode::TWO03);
-         encoderRight = new RotaryEncoder(ENCODER_B_IN1, ENCODER_B_IN2, RotaryEncoder::LatchMode::TWO03);
+         encoderLeft = new RotaryEncoder(ENCODER_A_1, ENCODER_A_2, RotaryEncoder::LatchMode::TWO03);
+         encoderRight = new RotaryEncoder(ENCODER_B_1, ENCODER_B_2, RotaryEncoder::LatchMode::TWO03);
 
-         attachInterrupt(digitalPinToInterrupt(ENCODER_A_IN1), left_encoder_isr, CHANGE);
-         attachInterrupt(digitalPinToInterrupt(ENCODER_A_IN2), left_encoder_isr, CHANGE);
-         attachInterrupt(digitalPinToInterrupt(ENCODER_B_IN1), right_encoder_isr, CHANGE);
-         attachInterrupt(digitalPinToInterrupt(ENCODER_B_IN2), right_encoder_isr, CHANGE);
+         attachInterrupt(digitalPinToInterrupt(ENCODER_A_1), left_encoder_isr, CHANGE);
+         attachInterrupt(digitalPinToInterrupt(ENCODER_A_2), left_encoder_isr, CHANGE);
+         attachInterrupt(digitalPinToInterrupt(ENCODER_B_1), right_encoder_isr, CHANGE);
+         attachInterrupt(digitalPinToInterrupt(ENCODER_B_2), right_encoder_isr, CHANGE);
+
+         reset();
+     }
+
+     void reset() {
+         m_left_counter = 0;
+         m_right_counter = 0;
+         m_robot_distance = 0;
      }
 
      void update() {
-         int leftDelta = m_left_counter;
-         int rightDelta = m_right_counter;
+         float leftDelta = m_left_counter;
+         float rightDelta = m_right_counter;
          m_left_counter = 0;
          m_right_counter = 0;
          float leftChange = leftDelta * MM_PER_COUNT_LEFT;
          float rightChange = rightDelta * MM_PER_COUNT_RIGHT;
          m_fwd_change = 0.5f * (leftChange + rightChange);
          m_robot_distance += m_fwd_change;
+
+         Serial.println(m_robot_distance);
      }
 
      void leftInputChange() {
@@ -57,15 +71,15 @@ class Encoders {
     private:
      float m_robot_distance;
      float m_fwd_change;
-     long m_left_counter = 0;
-     long m_right_counter = 0;
+     uint8_t m_left_counter;
+     uint8_t m_right_counter;
 };
 
-void left_encoder_isr() {
+inline void left_encoder_isr() {
     return encoders.leftInputChange();
 }
 
-void right_encoder_isr() {
+inline void right_encoder_isr() {
     return encoders.rightInputChange();
 }
 

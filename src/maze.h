@@ -27,8 +27,25 @@ enum Heading {
     NORTH = 0,
     EAST = 1,
     SOUTH = 2,
-    WEST = 3
+    WEST = 3,
+    HEADING_COUNT = 4
 };
+
+inline Heading rightFrom(const Heading heading) {
+    return static_cast<Heading> (heading + 1 % HEADING_COUNT);
+}
+
+inline Heading leftFrom(const Heading heading) {
+    return static_cast<Heading> (heading - 1 % HEADING_COUNT);
+}
+
+inline Heading aheadFrom(const Heading heading) {
+    return heading;
+}
+
+inline Heading behindFrom(const Heading heading) {
+    return static_cast<Heading> (heading - 2 % HEADING_COUNT);
+}
 
 class Location {
     public:
@@ -95,6 +112,28 @@ class Maze {
          setWallState(START, EAST, WALL);
          setWallState(START, NORTH, EXIT);
 
+     }
+
+     void updateWallState(Location cell, Heading heading, WallState state) {
+         switch (heading) {
+             case NORTH:
+                 if ((m_walls[cell.x][cell.y].north & UNKNOWN) != UNKNOWN)
+                     return;
+                 break;
+             case EAST:
+                 if ((m_walls[cell.x][cell.y].east & UNKNOWN) != UNKNOWN)
+                     return;
+                 break;
+             case WEST:
+                 if ((m_walls[cell.x][cell.y].west & UNKNOWN) != UNKNOWN)
+                     return;
+                 break;
+             case SOUTH:
+                 if ((m_walls[cell.x][cell.y].south & UNKNOWN) != UNKNOWN)
+                     return;
+                 break;
+         }
+         setWallState(cell, heading, state);
      }
 
      void setWallState(Location loc, Heading heading, WallState state) {

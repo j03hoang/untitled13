@@ -8,27 +8,30 @@ const int LOOP_FREQUENCY = 500;
 const int LOOP_INTERVAL = 1 / LOOP_FREQUENCY;
 
 /**  SENSORS */
-const int ULTRASONIC_TRIG = 4;
-const int ULTRASONIC_ECHO = PIN_A4;
+const int ULTRASONIC_TRIG_A = 0; // front
+const int ULTRASONIC_ECHO_A = PIN_A0;
+const int ULTRASONIC_TRIG_B = 1; // left
+const int ULTRASONIC_ECHO_B = PIN_A1;
+const int ULTRASONIC_TRIG_C = 2; // right
+const int ULTRASONIC_ECHO_C = PIN_A2;
 
-const int IR_1 = -1;
-const int IR_2 = -1;
+const int IR_A = -1;
+const int IR_B = -1;
 
 const float SPEED_OF_SOUND = 29.1;
 
 // SENSOR CALIBRATIONS
-const int LEFT_THRESHOLD = 40;   // minimum value to register a wall
-const int RIGHT_THRESHOLD = 40;  // minimum value to register a wall
 const int FRONT_THRESHOLD = 20;  // minimum value to register a wall
-const float LEFT_SCALE = -1;
-const float RIGHT_SCALE = -1;
-const float FRONT_SCALE = -1;
+const int LEFT_THRESHOLD = 20;  // minimum value to register a wall
+const int RIGHT_THRESHOLD = 20;  // minimum value to register a wall
 
+
+//https://components101.com/sites/default/files/component_datasheet/L298N-Motor-Driver-Datasheet.pdf
 /** MOTORs */
-const int MOTOR_A_FWD = 7;
-const int MOTOR_A_REVERSE = 8;
-const int MOTOR_B_FWD = 9;
-const int MOTOR_B_REVERSE = 10;
+const int MOTOR_A_FWD = 4; // right
+const int MOTOR_A_REVERSE = 5;
+const int MOTOR_B_FWD = 6; // left
+const int MOTOR_B_REVERSE = 7;
 
 const int MOTOR_MAX_PWM = 255;
 const int MOTOR_MIN_PWM = 100;
@@ -40,10 +43,10 @@ const int MM_PER_COUNT_LEFT = -1;
 const int MM_PER_COUNT_RIGHT = -1;
 
 /** ENCODERS */
-const int ENCODER_A_IN1 = 2;
-const int ENCODER_A_IN2 = 3;
-const int ENCODER_B_IN1 PIN_A6;
-const int ENCODER_B_IN2 PIN_A7;
+const int ENCODER_A_1 = 9; // right
+const int ENCODER_A_2 = 10;
+const int ENCODER_B_1 = 11; // left
+const int ENCODER_B_2 = 12;
 
 const int ROT_PER_TICK = 617;
 
@@ -65,6 +68,7 @@ constexpr float b = 1 - longCutoff * a;
 
 
 /** IMU */
+// https://cdn-shop.adafruit.com/datasheets/BST_BNO055_DS000_12.pdf
 const int32_t BNO_SENSOR_ID = 55;
 const uint8_t BNO_ADDRESS = 0x28;
 

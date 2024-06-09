@@ -51,48 +51,69 @@ class Sensors {
 
      void init() {
          // front sensor
-         m_fs_pin_1 = ULTRASONIC_TRIG;
-         m_fs_pin_2 = ULTRASONIC_ECHO;
-         pinMode(m_fs_pin_1, OUTPUT);
-         pinMode(m_fs_pin_2, INPUT);
+         m_fs_pin_out = ULTRASONIC_TRIG_A;
+         m_fs_pin_in = ULTRASONIC_ECHO_A;
+         pinMode(m_fs_pin_out, OUTPUT);
+         pinMode(m_fs_pin_in, INPUT);
 
          // left sensor
-         m_ls_pin = IR_1;
-         pinMode(m_ls_pin, INPUT);
+         m_ls_pin_out = ULTRASONIC_TRIG_B;
+         m_ls_pin_in = ULTRASONIC_ECHO_B;
+         pinMode(m_ls_pin_out, OUTPUT);
+         pinMode(m_ls_pin_in, INPUT);
 
-         // right sensor
-         m_rs_pin = IR_2;
-         pinMode(m_rs_pin, INPUT); // right sensor
+         m_rs_pin_out = ULTRASONIC_TRIG_C;
+         m_rs_pin_in = ULTRASONIC_ECHO_C;
+         pinMode(m_rs_pin_out, OUTPUT);
+         pinMode(m_rs_pin_in, INPUT);
      }
 
-     boolean readInfrared(uint8_t pin) {
-         return digitalRead(pin);
-     }
-
-     unsigned long readUltraSonic(uint8_t trigPin, uint8_t echoPin) {
+     static unsigned long readUltraSonic(uint8_t trigPin, uint8_t echoPin) {
          unsigned long duration;
          unsigned long distance;
          digitalWrite(trigPin, LOW);  //clears trigger pin
          delayMicroseconds(2);
          digitalWrite(trigPin, HIGH);
-         delayMicroseconds(10);                 // sets trigger pin HIGH for 10 us
+         delayMicroseconds(10);             // sets trigger pin HIGH for 10 us
          digitalWrite(echoPin, LOW);
          duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
          distance = (duration/2) / SPEED_OF_SOUND;
          return distance;
      }
 
+    static unsigned long readUltraSonic2(const int trigPin, const int echoPin) {
+        unsigned long duration;
+        unsigned long distance;
+        digitalWrite(trigPin, LOW);  //clears trigger pin
+        delayMicroseconds(2);
+        digitalWrite(trigPin, HIGH);
+        delayMicroseconds(10);             // sets trigger pin HIGH for 10 us
+        digitalWrite(echoPin, LOW);
+        duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
+        distance = (duration/2) / SPEED_OF_SOUND;
+        return distance;
+    }
+
      void update() {
-        see_left_wall = readInfrared(m_ls_pin);
-        see_right_wall = readInfrared(m_rs_pin);
-        see_front_wall = readUltraSonic() > FRONT_THRESHOLD;
+        see_left_wall = readUltraSonic(m_ls_pin_out, m_ls_pin_in) < LEFT_THRESHOLD;
+        see_right_wall = readUltraSonic(m_rs_pin_out, m_rs_pin_in) < RIGHT_THRESHOLD;
+        see_front_wall = readUltraSonic(m_fs_pin_out, m_fs_pin_in) < FRONT_THRESHOLD;
+
+        Serial.print("LEFT:");
+        Serial.println(see_left_wall);
+        Serial.print("RIGHT:");
+        Serial.println(see_right_wall);
+        Serial.print("FRONT:");
+        Serial.println(see_front_wall);
      }
 
     private:
-     uint8_t m_fs_pin_1;
-     uint8_t m_fs_pin_2;
-     uint8_t m_ls_pin;
-     uint8_t m_rs_pin;
+     uint8_t m_fs_pin_out;
+     uint8_t m_fs_pin_in;
+     uint8_t m_ls_pin_out;
+     uint8_t m_ls_pin_in;
+     uint8_t m_rs_pin_out;
+     uint8_t m_rs_pin_in;
 };
 
 #endif
