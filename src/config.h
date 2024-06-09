@@ -43,10 +43,11 @@ const int MM_PER_COUNT_LEFT = -1;
 const int MM_PER_COUNT_RIGHT = -1;
 
 /** ENCODERS */
-const int ENCODER_A_1 = 9; // right
-const int ENCODER_A_2 = 10;
-const int ENCODER_B_1 = 11; // left
-const int ENCODER_B_2 = 12;
+// uses internal interrupts, refer to: https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/
+const int ENCODER_A_1 = 18; // right
+const int ENCODER_A_2 = 19;
+const int ENCODER_B_1 = 2; // left
+const int ENCODER_B_2 = 3;
 
 const int ROT_PER_TICK = 617;
 

@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#include <Encoder.h>
+
 #include "config.h"
 #include "sensors.h"
 #include "encoders.h"
@@ -11,8 +13,9 @@ Motors motors;
 Encoders encoders;
 IMU gyro;
 
-RotaryEncoder encoder1(ENCODER_A_1, ENCODER_A_2, RotaryEncoder::LatchMode::TWO03);
-RotaryEncoder encoder2(ENCODER_B_1, ENCODER_B_2, RotaryEncoder::LatchMode::TWO03);
+Encoder myEnc1(ENCODER_A_1, ENCODER_A_2);
+Encoder myEnc2(ENCODER_B_1, ENCODER_B_2);
+
 //Adafruit_BNO055 bno = Adafruit_BNO055(BNO_SENSOR_ID, BNO_ADDRESS, &Wire);
 
 //ISR(TIMER2_COMPA_vect, ISR_NOBLOCK) {
@@ -20,9 +23,7 @@ RotaryEncoder encoder2(ENCODER_B_1, ENCODER_B_2, RotaryEncoder::LatchMode::TWO03
 //    gyro.update();
 //}
 
-
-
-double convert(int numTicks) {
+double convert(long numTicks) {
     double numRotations = (double) numTicks / ROT_PER_TICK;
     return numRotations * 135;
 }
@@ -99,63 +100,29 @@ void setup() {
 //    encoders.init(); // bad
     gyro.init(); // good
     motors.init(); // good
+
 }
 
-long leftCount2 = 0;
-long rightCount2 = 0;
+void doEncoder3() {
 
-void doEncoder() {
-    encoder1.tick();
-    encoder2.tick();
-    leftCount2 = encoder1.getPosition();
-    rightCount2 = encoder2.getPosition();
-    Serial.print("RIGHT:");
-    Serial.println(rightCount2);
-    Serial.print("LEFT:");
-    Serial.println(leftCount2);
-};
+    long position1 = myEnc1.read();
+    Serial.print("1: ");
+    Serial.print(position1);
+    double actual1 = convert(position1);
+    Serial.print(" | ");
+    Serial.println(actual1);
 
-static int lastPos = 0;
-
-void doEncoder2() {
-    encoder2.tick();
-
-    int newPos = encoder2.getPosition();
-
-
-    if (lastPos != newPos) {
-
-        // accelerate when there was a previous rotation in the same direction.
-
-        unsigned long ms = encoder2.getMillisBetweenRotations();
-
-        if (ms < longCutoff) {
-            // do some acceleration using factors a and b
-
-            // limit to maximum acceleration
-            if (ms < shortCutoff) {
-                ms = shortCutoff;
-            }
-
-            float ticksActual_float = a * ms + b;
-            Serial.print("  f= ");
-            Serial.println(ticksActual_float);
-
-            long deltaTicks = (long)ticksActual_float * (newPos - lastPos);
-            Serial.print("  d= ");
-            Serial.println(deltaTicks);
-
-            newPos = newPos + deltaTicks;
-            encoder2.setPosition(newPos);
-        }
-
-        Serial.print(newPos);
-        Serial.print("  ms: ");
-        Serial.println(ms);
-        lastPos = newPos;
-    }
+    long position2 = myEnc2.read();
+    Serial.print("2: ");
+    Serial.print(position2);
+    double actual2 = convert(position2);
+    Serial.print(" | ");
+    Serial.println(actual2);
 }
 
+void doIMU() {
+
+}
 
 void loop() {
 //    if (!sensors.see_right_wall)
@@ -165,19 +132,31 @@ void loop() {
 //    else if (!sensors.see_left_wall)
 //        turnLeft();
 //    else
-//    sensors.update();
 //        turnBack();
 //
 
-//    gyro.update();
+//    sensors.update();
 
-//    analogWrite(MOTOR_A_FWD, MOTOR_MAX_PWM * 0.75);
-//    analogWrite(MOTOR_A_REVERSE, 0);
+
+    // https://forums.adafruit.com/viewtopic.php?t=192881
+    analogWrite(MOTOR_A_FWD, MOTOR_MAX_PWM);
+    analogWrite(MOTOR_A_REVERSE, MOTOR_MAX_PWM);
+
+    analogWrite(MOTOR_B_FWD, MOTOR_MAX_PWM);
+    analogWrite(MOTOR_B_REVERSE, MOTOR_MAX_PWM);
+
+    gyro.update();
+
+
 //
-//    analogWrite(MOTOR_B_FWD, MOTOR_MAX_PWM * 0.75);
-//    analogWrite(MOTOR_B_REVERSE, 0);
-//
-    doEncoder();
+//    doEncoder();
+//    encoders.leftInputChange();
+//    encoders.rightInputChange();
+
+//    doEncoder3();
+
+//    encoders.leftInputChange();
+//    encoders.rightInputChange();
 
     delay(1000);
 

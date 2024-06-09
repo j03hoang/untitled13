@@ -1,33 +1,18 @@
 #ifndef UNTITLED13_ENCODERS_H
 #define UNTITLED13_ENCODERS_H
 
-#include <RotaryEncoder.h>
+#include <Encoder.h>
 #include "config.h"
-
-RotaryEncoder *encoderLeft = nullptr;
-RotaryEncoder *encoderRight = nullptr;
 
 class Encoders;
 extern Encoders encoders;
 
-int leftCount = 0;
-int rightCount = 0;
-
-void left_encoder_isr();
-
-void right_encoder_isr();
+Encoder encoderLeft(ENCODER_A_1, ENCODER_A_2);
+Encoder encoderRight(ENCODER_B_1, ENCODER_B_2);
 
 class Encoders {
     public:
      void init() {
-         encoderLeft = new RotaryEncoder(ENCODER_A_1, ENCODER_A_2, RotaryEncoder::LatchMode::TWO03);
-         encoderRight = new RotaryEncoder(ENCODER_B_1, ENCODER_B_2, RotaryEncoder::LatchMode::TWO03);
-
-         attachInterrupt(digitalPinToInterrupt(ENCODER_A_1), left_encoder_isr, CHANGE);
-         attachInterrupt(digitalPinToInterrupt(ENCODER_A_2), left_encoder_isr, CHANGE);
-         attachInterrupt(digitalPinToInterrupt(ENCODER_B_1), right_encoder_isr, CHANGE);
-         attachInterrupt(digitalPinToInterrupt(ENCODER_B_2), right_encoder_isr, CHANGE);
-
          reset();
      }
 
@@ -51,16 +36,12 @@ class Encoders {
      }
 
      void leftInputChange() {
-         encoderLeft->tick();
-         m_right_counter = encoderLeft->getPosition();
-         Serial.print("LEFT:");
+         m_left_counter = encoderLeft.read();
          Serial.println(m_left_counter);
      }
 
      void rightInputChange() {
-         encoderRight->tick();
-         m_left_counter = encoderRight->getPosition();
-         Serial.print("RIGHT:");
+         m_right_counter = encoderRight.read();
          Serial.println(m_right_counter);
      }
 
@@ -75,12 +56,5 @@ class Encoders {
      uint8_t m_right_counter;
 };
 
-inline void left_encoder_isr() {
-    return encoders.leftInputChange();
-}
-
-inline void right_encoder_isr() {
-    return encoders.rightInputChange();
-}
 
 #endif

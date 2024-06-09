@@ -20,7 +20,8 @@ class IMU {
          imuSensor.begin();
          imuSensor.setExtCrystalUse(true);
 
-         m_prev_time = millis();
+         m_prev_time = 0;
+         m_robot_angle = 0;
 
          reset();
      }
@@ -30,24 +31,64 @@ class IMU {
      }
 
      void update() {
-         sensors_event_t event;
-         imuSensor.getEvent(&event, Adafruit_BNO055::VECTOR_GYROSCOPE);
-
          unsigned long currentTime = millis();
          float deltaTime = (float) (currentTime - m_prev_time) / 1000.f;
          m_prev_time = currentTime;
 
-         float z = event.gyro.z;
-         Serial.print("z");
+
+         // calibration
+         uint8_t system, gyro, accel, mag;
+         system = gyro = accel = mag = 0;
+         imuSensor.getCalibration(&system, &gyro, &accel, &mag);
+         Serial.print("\t");
+         if (!system)
+         {
+             Serial.print("! ");
+         }
+
+         /* Display the individual values */
+         Serial.print("Sys:");
+         Serial.print(system, DEC);
+         Serial.print(" G:");
+         Serial.print(gyro, DEC);
+         Serial.print(" A:");
+         Serial.print(accel, DEC);
+         Serial.print(" M:");
+         Serial.print(mag, DEC);
+
+
+
+         // TEST1
+         imu::Vector<3> gyr = imuSensor.getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
+
+         double z = gyr.z();
+         Serial.print("z: ");
          Serial.println(z);
 
-         Serial.println(event.gyro.x);
-         Serial.println(event.gyro.y);
-         m_rot_change = event.gyro.z * deltaTime;
-         m_robot_angle += m_rot_change;
+         Serial.print("x: ");
+         Serial.println(gyr.x());
 
-         Serial.print("Rotational Change: ");
-         Serial.println(m_rot_change);
+         Serial.print("y: ");
+         Serial.println(gyr.y());
+
+         double test = z * deltaTime;
+         Serial.print("rotational change: ");
+         Serial.println(test);
+         m_robot_angle += test;
+         Serial.print("Angle: ");
+         Serial.println(m_robot_angle );
+
+         // TEST2
+
+//         sensors_event_t event;
+//         imuSensor.getEvent(&event, Adafruit_BNO055::VECTOR_GYROSCOPE);
+
+//         m_rot_change = event.gyro.z * deltaTime;
+//         m_robot_angle += m_rot_change;
+//
+//
+//         Serial.print("Angle: ");
+//         Serial.println(m_robot_angle);
      }
 
      float getRotChange() const {

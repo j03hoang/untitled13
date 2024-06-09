@@ -81,30 +81,26 @@ class Sensors {
          return distance;
      }
 
-    static unsigned long readUltraSonic2(const int trigPin, const int echoPin) {
-        unsigned long duration;
-        unsigned long distance;
-        digitalWrite(trigPin, LOW);  //clears trigger pin
-        delayMicroseconds(2);
-        digitalWrite(trigPin, HIGH);
-        delayMicroseconds(10);             // sets trigger pin HIGH for 10 us
-        digitalWrite(echoPin, LOW);
-        duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
-        distance = (duration/2) / SPEED_OF_SOUND;
-        return distance;
-    }
-
      void update() {
-        see_left_wall = readUltraSonic(m_ls_pin_out, m_ls_pin_in) < LEFT_THRESHOLD;
-        see_right_wall = readUltraSonic(m_rs_pin_out, m_rs_pin_in) < RIGHT_THRESHOLD;
-        see_front_wall = readUltraSonic(m_fs_pin_out, m_fs_pin_in) < FRONT_THRESHOLD;
+         unsigned long front = readUltraSonic(m_ls_pin_out, m_ls_pin_in);
+         unsigned long left = readUltraSonic(m_ls_pin_out, m_ls_pin_in);
+         unsigned long right = readUltraSonic(m_ls_pin_out, m_ls_pin_in);
+         see_left_wall = left < LEFT_THRESHOLD;
+         see_right_wall = right < RIGHT_THRESHOLD;
+         see_front_wall = front < FRONT_THRESHOLD;
 
-        Serial.print("LEFT:");
-        Serial.println(see_left_wall);
-        Serial.print("RIGHT:");
-        Serial.println(see_right_wall);
-        Serial.print("FRONT:");
-        Serial.println(see_front_wall);
+         Serial.print("LEFT: ");
+         Serial.print(left);
+         Serial.print(" | ");
+         Serial.println(see_left_wall);
+         Serial.print("RIGHT:");
+         Serial.print(right);
+         Serial.print(" | ");
+         Serial.println(see_right_wall);
+         Serial.print("FRONT:");
+         Serial.print(front);
+         Serial.print(" | ");
+         Serial.println(see_front_wall);
      }
 
     private:
