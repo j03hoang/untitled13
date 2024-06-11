@@ -195,7 +195,7 @@ void setup() {
 float prevAngle = 0;
 
 void loop() {
-    sensors.update();
+//    sensors.update();
 
     // maze update
 
@@ -210,7 +210,7 @@ void loop() {
 
 
 
-    turnRight();
+    turnBack();
 
     delay(3000);
 

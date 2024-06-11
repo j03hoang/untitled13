@@ -37,7 +37,7 @@ class Motors {
 
      void stop() {
          setLeftMotorPWM(MOTOR_MAX_PWM);
-         set_right_motor_pwm(MOTOR_MAX_PWM);
+         setRightMotorPWM(MOTOR_MAX_PWM);
      }
 
      /** TODO: PID Controllers, UNIMPLEMENTED */
