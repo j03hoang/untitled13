@@ -5,13 +5,8 @@
 
 /* Using 2 Ultrasonic Sensors and a photo resistor paired with an led
  *      - Ultrasonic Sensor has 15 degree range
- *      - We have 2 photoresistors/LED combos
- *          - must be calibrated to ambient light level :/ ie not very precise
- *
  *
  * TODO:
- *      - Figure out where sensors are going to mounted
- *      - calibrate photo resistor and LED
  *      - sense walls
  *          # 18cm x 18 cm unit cell
  *          - trigger sound
@@ -27,7 +22,8 @@
  * https://en.wikiversity.org/wiki/User:Dstaub/robotcar
  * https://arduinolearn.github.io/ultra.html
  *      - In order to generate the ultrasound, you need to set the Trig on a High State for 10 µs.
- *      - That will send out an 8 cycle sonic burst which will travel at the speed sound and will be received in the Echo pin.
+ *      - That will send out an 8 cycle sonic burst which will travel at the speed sound
+ *      and will be received in the Echo pin.
  *      - The Echo pin will output the time of travel of the sound wave in microseconds.
  *
  * Datasheet:
@@ -62,6 +58,7 @@ class Sensors {
          pinMode(m_ls_pin_out, OUTPUT);
          pinMode(m_ls_pin_in, INPUT);
 
+         // right sensor
          m_rs_pin_out = ULTRASONIC_TRIG_C;
          m_rs_pin_in = ULTRASONIC_ECHO_C;
          pinMode(m_rs_pin_out, OUTPUT);
@@ -82,25 +79,12 @@ class Sensors {
      }
 
      void update() {
-         unsigned long front = readUltraSonic(m_ls_pin_out, m_ls_pin_in);
+         unsigned long front = readUltraSonic(m_fs_pin_out, m_fs_pin_in);
          unsigned long left = readUltraSonic(m_ls_pin_out, m_ls_pin_in);
-         unsigned long right = readUltraSonic(m_ls_pin_out, m_ls_pin_in);
+         unsigned long right = readUltraSonic(m_rs_pin_out, m_rs_pin_in);
          see_left_wall = left < LEFT_THRESHOLD;
          see_right_wall = right < RIGHT_THRESHOLD;
          see_front_wall = front < FRONT_THRESHOLD;
-
-         Serial.print("LEFT: ");
-         Serial.print(left);
-         Serial.print(" | ");
-         Serial.println(see_left_wall);
-         Serial.print("RIGHT:");
-         Serial.print(right);
-         Serial.print(" | ");
-         Serial.println(see_right_wall);
-         Serial.print("FRONT:");
-         Serial.print(front);
-         Serial.print(" | ");
-         Serial.println(see_front_wall);
      }
 
     private:

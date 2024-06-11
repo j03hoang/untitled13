@@ -5,6 +5,7 @@
 #include "config.h"
 #include "maze.h"
 #include "sensors.h"
+#include "motion.h"
 
 class Mouse {
     public:
@@ -13,17 +14,23 @@ class Mouse {
          m_heading = NORTH;
 
          while (m_location != target) {
+             sensors.update();
              updateMap();
 
              if (!sensors.see_right_wall) {
-                 turnLeft();
+                 turnRight();
+                 m_location = m_location.east();
              } else if (!sensors.see_front_wall) {
                  moveAhead();
+                 m_location = m_location.north();
              } else if (!sensors.see_left_wall) {
-                 turnRight();
+                 turnLeft();
+                 m_location = m_location.west();
              } else {
                  turnBack();
+                 m_location = m_location.south();
              }
+             m_location = m_location.neighbour(m_heading);
          }
      }
 
@@ -58,19 +65,22 @@ class Mouse {
      }
 
      void moveAhead() {
-
+        motion.moveAhead();
      }
 
      void turnLeft() {
-
+        motion.turnLeft();
+        m_heading = leftFrom(m_heading);
      }
 
      void turnRight() {
-
+        motion.turnRight();
+        m_heading = rightFrom(m_heading);
      }
 
      void turnBack() {
-
+        motion.moveBack();
+        m_heading = behindFrom(m_heading);
      }
 
 

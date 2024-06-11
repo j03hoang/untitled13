@@ -4,6 +4,10 @@
 #include <Encoder.h>
 #include "config.h"
 
+/**
+ * Datasheet: https://www.pololu.com/file/0J1487/pololu-micro-metal-gearmotors.pdf
+ */
+
 class Encoders;
 extern Encoders encoders;
 
@@ -22,17 +26,20 @@ class Encoders {
          m_robot_distance = 0;
      }
 
+     // TODO
      void update() {
-         float leftDelta = m_left_counter;
-         float rightDelta = m_right_counter;
-         m_left_counter = 0;
-         m_right_counter = 0;
-         float leftChange = leftDelta * MM_PER_COUNT_LEFT;
-         float rightChange = rightDelta * MM_PER_COUNT_RIGHT;
+         float leftChange = convertTicksToMM(m_left_counter);
+         float rightChange = convertTicksToMM(m_right_counter);
          m_fwd_change = 0.5f * (leftChange + rightChange);
          m_robot_distance += m_fwd_change;
 
          Serial.println(m_robot_distance);
+     }
+
+     float convertTicksToMM(int numTicks) {
+         float numRotations = (float) numTicks / ROT_PER_TICK;
+         float distance = numRotations * WHEEL_CIRCUMFERENCE;
+         return distance;
      }
 
      void leftInputChange() {
@@ -43,6 +50,10 @@ class Encoders {
      void rightInputChange() {
          m_right_counter = encoderRight.read();
          Serial.println(m_right_counter);
+     }
+
+     float getDistance() const {
+         return m_robot_distance;
      }
 
      float getFwdChange() const {
