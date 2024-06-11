@@ -50,11 +50,8 @@ const int ROT_PER_TICK = 617;
 const int WHEEL_CIRCUMFERENCE = 135; // mm
 
 /** IMU */
-// https://cdn-shop.adafruit.com/datasheets/BST_BNO055_DS000_12.pdf
-const int32_t BNO_SENSOR_ID = 55;
-const uint8_t BNO_ADDRESS = 0x28;
+const uint8_t IMU_ADDRESS = 0x68;
 
-
-const float FULL_CELL = 90.0f; // mm
+const float FULL_CELL = 180.0f; // mm
 
 #endif

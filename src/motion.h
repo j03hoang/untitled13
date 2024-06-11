@@ -5,11 +5,18 @@
 #include "motors.h"
 #include "profile.h"
 
+/**
+ * the Motion class handles high-level logic for the motors, while using the encoders and gyroscope
+ * to ensure accurate movement.
+ *
+ * TODO: incorporate desired velocity
+ */
+
 class Motion {
 
     public:
+    // TODO: incorporate positional and angular velocity for smooth turns
      void update() {
-        // TODO: incorporate positional and angular velocity for smooth turns
      }
 
      void stop() {
@@ -46,24 +53,26 @@ class Motion {
          moveAhead();
      }
 
-    static void waitUntilTurnFinished(float omega) {
-        int desired = ((int) (gyro.getPrevAngle() + 360 + omega)) % 360;
-        while (!(gyro.getRotChange() < desired + 1 && gyro.getRotChange() > desired - 1)) {
-            gyro.update();
-            delay(2);
-        }
-    }
+     /** function used to delay motors until a full turn has been completed */
+     static void waitUntilTurnFinished(float omega) {
+         int desired = ((int) (gyro.getPrevAngle() + 360 + omega)) % 360;
+         while (!(gyro.getRotChange() < desired + 1 && gyro.getRotChange() > desired - 1)) {
+             gyro.update();
+             delay(2);
+         }
+     }
 
-    static void waitUntilAheadFinished(float deltaX) {
-        float x0 = encoders.getDistance();
-        Serial.print("current distance: ");
-        Serial.println(x0);
-        while (encoders.getDistance() < x0 + deltaX)
-            delay(2);
+    /** function used to delay motors until a full cell has been traversed */
+     static void waitUntilAheadFinished(float deltaX) {
+         float x0 = encoders.getDistance();
+         Serial.print("current distance: ");
+         Serial.println(x0);
+         while (encoders.getDistance() < x0 + deltaX)
+             delay(2);
 
-        Serial.print("new distance");
-        Serial.println(encoders.getDistance());
-    }
+         Serial.print("new distance");
+         Serial.println(encoders.getDistance());
+     }
 };
 
 extern Motion motion;

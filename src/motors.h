@@ -2,6 +2,9 @@
 #define UNTITLED13_MOTORS_H
 
 /**
+ * The Motor class handles setting PWM for either wheel
+ *
+ * TODO: the Motor class should also handle PID controls with inputs from the gyroscope and encoders to ensure synchronization
  *
  * Datasheet: https://www.pololu.com/file/0J1487/pololu-micro-metal-gearmotors.pdf
  *
@@ -64,6 +67,8 @@ class Motors {
 //
 //     }
 
+    /** setLeft and setRightMotorPWM make sure we don't go over motor voltage capacity.
+     * Negative values are considered wanting to spin in the opposite direction.*/
      void setLeftMotorPWM(int pwm) {
          pwm = constrain(pwm, -MOTOR_MAX_PWM, MOTOR_MAX_PWM);
          if (pwm < 0)
@@ -80,6 +85,7 @@ class Motors {
              CW(MOTOR_B_1, MOTOR_B_2, pwm);
      }
 
+    /** write to each individual motor */
      void CCW(uint8_t pin1, uint8_t pin2, int pwm) {
          pwm = constrain(pwm, MOTOR_MIN_PWM, MOTOR_MAX_PWM);
          analogWrite(pin1, 0);

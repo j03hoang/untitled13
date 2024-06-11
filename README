@@ -1,0 +1,21 @@
+GITHUB LINK: https://github.com/j03hoang/untitled13
+This is our take on take on the code for Micro-Mouse competition, where contestants use a home-built robot to solve a maze.
+
+It is heavily inspired by the UKMARSBOT team. We used their code as a framework and implemented our own functions.
+> https://github.com/ukmars/mazerunner-core
+
+The code contains initialization for all the sensors as well as basic movement.
+
+The project is maintained and developed using PlatformIO and CLion.
+
+Additional information can be found in our Software Requirement Specification document.
+
+
+Parts used:
+    Encoder + Motor: 50:1 Micro Metal Gearmotor, HPCB 12V, 12 CPR Encoder, Side connector
+    Gear Motor: L298-N H-Bridge
+    IMU: MPU-6500
+    Sensors: Three HC-SRO4 Ultrasonic
+    Board: Arduino Mega 2560
+
+GITHUB LINK: https://github.com/j03hoang/untitled13

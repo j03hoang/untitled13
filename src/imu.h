@@ -2,24 +2,26 @@
 #define UNTITLED13_IMU_H
 
 #include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
-#include <utility/imumaths.h>
+#include "../lib/FastIMU/src/F_MPU6500.hpp"
 #include "config.h"
-
 /**
+ * Library: https://github.com/LiquidCGS/FastIMU
+ *
  * https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/device-calibration
  * https://forums.adafruit.com/viewtopic.php?t=192881
  * 
  */
 
-Adafruit_BNO055 imuSensor(BNO_SENSOR_ID, BNO_ADDRESS, &Wire);
+GyroData gyroData;
+MPU6500 imuSensor;
+calData calib = { 0 };
 
 class IMU {
     public:
      void init() {
-         imuSensor.begin();
-         imuSensor.setExtCrystalUse(true);
+         Wire.begin();
+         Wire.setClock(400000);
+         imuSensor.init(calib, IMU_ADDRESS);
 
          reset();
      }
@@ -27,15 +29,28 @@ class IMU {
      void reset() {
          m_prev_angle = 0;
          m_current_angle = 0;
+         m_prev_time = 0;
      }
 
      void update() {
-         sensors_event_t event;
-         imuSensor.getEvent(&event);
+         imuSensor.update();
+         imuSensor.getGyro(&gyroData);
+
+         unsigned long currentTime = millis();
+         float deltaTime =  ((float) currentTime - m_prev_time) / 1000.f;
+         m_prev_time = (float) currentTime;
+
+         m_rot_change = gyroData.gyroZ * deltaTime;
+
+         m_current_angle += m_rot_change;
+
+         m_current_angle = fmod(m_current_angle, 360.0f);
+
          m_prev_angle = m_current_angle;
-         m_current_angle = event.orientation.x;
      }
 
+
+    /** a previous angle is maintained to keep track of how much rotation change is needed for a turn*/
      float getPrevAngle() const {
          return m_prev_angle;
      }
@@ -45,6 +60,8 @@ class IMU {
      }
 
     private:
+     float m_prev_time;
+     float m_rot_change;
      float m_prev_angle;
      float m_current_angle;
 };
